@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ batch.title if batch.title else 'Batch Details' }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav li {
+            margin-left: 1.5rem;
+        }
+        
+        .main-nav a {
+            color: white;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        
+        .main-nav a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Content Card Styles */
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h2, h3, h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+        }
+        
+        /* Subject Grid Styles */
+        .subjects-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e1e4e8;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Batch Header Styles */
+        .batch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .batch-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+        }
+        
+        /* Footer Styles */
+        .main-footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-col h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info li {
+            margin-bottom: 0.5rem;
+            list-style: none;
+        }
+        
+        .contact-info i {
+            margin-right: 0.5rem;
+            width: 1.2rem;
+            text-align: center;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .subjects-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .batch-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .batch-date {
+                margin-top: 0.5rem;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            
+            .main-nav li {
+                margin: 0.3rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="{{ url_for('home') }}">
+                    <h1>LB Hub</h1>
+                </a>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><i class="fa fa-home" aria-hidden="true"></i> <a href="{{ url_for('home') }}">Home</a></li>
+                    {% if session.get('admin_logged_in') %}
+                        <li>
+                            <a href="{{ url_for('admin_dashboard') }}" class="admin-btn">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('admin_logout') }}" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{{ url_for('admin_login') }}" class="admin-btn">
+                                <i class="fas fa-user-shield"></i> Admin
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+
+            <div class="content-card">
+                <h3>Subjects</h3>
+                {% if not subjects %}
+                    <div class="empty-state">
+                        <p>No subjects available in this batch yet.</p>
+                    </div>
+                {% else %}
+                    <div class="subjects-list">
+                        {% for subject in subjects %}
+                            <div class="subject-card">
+                                <h4>{{ subject.name if subject.name else 'Unnamed Subject' }}</h4>
+                                <a href="{{ url_for('show_subject', subject_id=subject.subject_id) }}" class="btn">View Content</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="content-card">
+                <a href="{{ url_for('home') }}" class="btn">Back to All Batches</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> contact@example.com</li>
+                    <li><a href="https://t.me/contact_262524_bot"><i class="fab fa-telegram"></i> Telegram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Check if real Chrome (not Edge/Brave/Opera)
+const isRealChrome = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return (
+        userAgent.includes('chrome') && 
+        !userAgent.includes('edg/') && 
+        !userAgent.includes('opr/') && 
+        !userAgent.includes('brave') &&
+        window.chrome !== undefined
+    );
+};
+
+    if (!isRealChrome()) {
+        window.location.href = "https://t.me/contact_262524_bot"; // Chrome डाउनलोड पेज
+    
+    throw new Error("Browser not supported");
+}
+        // Flash messages close functionality
+        document.querySelectorAll('.close-flash').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.target.parentElement.remove();
+            });
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mainNav = document.querySelector('.main-nav');
+        
+        if (mobileMenuBtn && mainNav) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mainNav.classList.toggle('show');
+            });
+        }
+    </script>
+    <script src="{{ url_for('static', filename='protect.js') }}"></script>
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</body>
+</html>

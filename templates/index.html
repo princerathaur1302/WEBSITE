@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LB Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<!-- Header Section -->
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo">
+            <h1>LB Hub</h1>
+        </div>
+
+        <nav class="vertical-nav">
+            <a href="{{ url_for('home') }}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            {% if session.get('admin_logged_in') %}
+                <a href="{{ url_for('admin_dashboard') }}">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
+            {% else %}
+                <a href="{{ url_for('admin_login') }}">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Banner -->
+            <section class="hero-banner">
+                <div class="hero-text">
+                    <h1>Learn Without Limits</h1>
+                    <a href="#batches" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i> Explore Batches
+                    </a>
+                </div>
+            </section>
+
+            <!-- Featured Batches -->
+            <section id="batches" class="batch-section">
+                <h2 class="section-title">
+                    <i class="fas fa-layer-group"></i> Available Batches
+                </h2>
+                
+                {% if not batches %}
+                    <div class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <p>No batches available yet. Check back later!</p>
+                    </div>
+                {% else %}
+                    <div class="batch-grid">
+                        {% for batch in batches %}
+                        <div class="batch-card">
+                            <div class="batch-header">
+                                <h3>{{ batch.title }}</h3>
+                                <span class="batch-date">
+                                    {% if batch.created_at %}
+                                        {{ batch.created_at[:10] }} {# Show first 10 chars (YYYY-MM-DD) #}
+                                    {% else %}
+                                        Recently Added
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="batch-body">
+                                <p class="batch-desc">
+                                    {% if batch.description %}
+                                        {{ batch.description }}
+                                    {% else %}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            
+                            <div class="batch-footer">
+                                <a href="{{ url_for('show_batch', batch_id=batch.batch_id) }}" class="btn btn-outline">
+                                    <i class="fas fa-door-open"></i> Enter Batch
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> contact@example.com</li>
+                    <li><a href="https://t.me/contact_262524_bot"><i class="fab fa-telegram"></i> Telegram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <script>
+        // Check if real Chrome (not Edge/Brave/Opera)
+const isRealChrome = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return (
+        userAgent.includes('chrome') && 
+        !userAgent.includes('edg/') && 
+        !userAgent.includes('opr/') && 
+        !userAgent.includes('brave') &&
+        window.chrome !== undefined
+    );
+};
+
+    if (!isRealChrome()) {
+        window.location.href = "https://t.me/contact_262524_bot"; // Chrome डाउनलोड पेज
+    
+    throw new Error("Browser not supported");
+}
+        // Flash message close functionality
+        document.querySelectorAll('.close-flash').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.target.parentElement.remove();
+            });
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mainNav = document.querySelector('.main-nav');
+        
+        if (mobileMenuBtn && mainNav) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mainNav.classList.toggle('show');
+            });
+        }
+    </script>
+
+<script src="{{ url_for('static', filename='protect.js') }}"></script>
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</body>
+</html>
