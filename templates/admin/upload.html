@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Upload - PW-Style Admin</title>
+    <!-- Using your existing static files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles specific to upload page */
+        .upload-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-header h2 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-upload-box {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        
+        .file-upload-box:hover {
+            background: #f0f7ff;
+            border-color: #2980b9;
+        }
+        
+        .file-upload-box i {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        
+        #file-name {
+            margin-top: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .upload-instructions {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border-left: 4px solid #3498db;
+        }
+        
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Consistent header with dashboard -->
+        <div class="dashboard-header">
+            <h1><i class="fas fa-file-upload"></i> Upload New Batch</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <!-- Flash messages display -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">
+                            {{ message }}
+                            <span class="close-flash">&times;</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="upload-container">
+            <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+                <!-- Batch ID Field -->
+                <div class="form-group">
+                    <label for="batch_id"><i class="fas fa-id-badge"></i> Batch ID</label>
+                    <input type="text" id="batch_id" name="batch_id" class="form-control" required 
+                           placeholder="e.g., NEET_2024_HINDI" pattern="[A-Za-z0-9_]+" title="Only letters, numbers and underscores allowed">
+                </div>
+                
+                <!-- Batch Title Field -->
+                <div class="form-group">
+                    <label for="title"><i class="fas fa-heading"></i> Batch Title</label>
+                    <input type="text" id="title" name="title" class="form-control" required 
+                           placeholder="e.g., NEET 2024 Hindi Medium">
+                </div>
+                
+                <!-- File Upload Section -->
+                <div class="form-group">
+                    <label><i class="fas fa-file-alt"></i> Batch Content File</label>
+                    <div id="uploadArea" class="file-upload-box">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Select TXT File</h3>
+                        <p>or drag and drop file here</p>
+                        <div id="file-name">No file selected</div>
+                        <input type="file" id="file-input" name="file" accept=".txt" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload Batch
+                </button>
+            </form>
+            
+            <div class="upload-instructions">
+                <h3><i class="fas fa-info-circle"></i> File Format Instructions:</h3>
+                <ul>
+                    <li>File must be a .txt file with proper formatting</li>
+                    <li>First line should contain batch information</li>
+                    <li>Subsequent lines should contain subject-wise content</li>
+                    <li>Format: <code>Subject - Lecture Title:URL</code></li>
+                    <li>Example: <code>Physics - Electric Charges 01:https://example.com/lecture1.mp4</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Using your existing script file -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- Upload page specific scripts -->
+    <script>
+        // Check if real Chrome (not Edge/Brave/Opera)
+const isRealChrome = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return (
+        userAgent.includes('chrome') && 
+        !userAgent.includes('edg/') && 
+        !userAgent.includes('opr/') && 
+        !userAgent.includes('brave') &&
+        window.chrome !== undefined
+    );
+};
+
+    if (!isRealChrome()) {
+        window.location.href = "https://t.me/contact_262524_bot"; // Chrome डाउनलोड पेज
+    
+    throw new Error("Browser not supported");
+}
+        // File selection handler
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+            
+            // Auto-fill batch ID if empty
+            if (!document.getElementById('batch_id').value && fileName.endsWith('.txt')) {
+                document.getElementById('batch_id').value = fileName.replace('.txt', '');
+            }
+        });
+        
+        // Drag and drop functionality
+        const uploadBox = document.getElementById('uploadArea');
+        
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '#e6f0ff';
+            uploadBox.style.borderColor = '#2980b9';
+        });
+        
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.backgroundColor = '#f8fafc';
+            uploadBox.style.borderColor = '#3498db';
+        });
+        
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '#f8fafc';
+            uploadBox.style.borderColor = '#3498db';
+            
+            if (e.dataTransfer.files.length) {
+                const fileInput = document.getElementById('file-input');
+                fileInput.files = e.dataTransfer.files;
+                document.getElementById('file-name').textContent = e.dataTransfer.files[0].name;
+                
+                // Auto-fill batch ID if empty
+                if (!document.getElementById('batch_id').value && e.dataTransfer.files[0].name.endsWith('.txt')) {
+                    document.getElementById('batch_id').value = e.dataTransfer.files[0].name.replace('.txt', '');
+                }
+            }
+        });
+        
+        // Close flash messages
+        document.querySelectorAll('.close-flash').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.target.parentElement.remove();
+            });
+        });
+    </script>
+<script src="{{ url_for('static', filename='protect.js') }}"></script>
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .action-buttons {
+            margin-bottom: 20px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .action-buttons .btn {
+            margin-right: 5px;
+        }
+        
+        form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">
+                            {{ message }}
+                            <span class="close-flash">&times;</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="dashboard-header">
+            <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Batches</h3>
+                <div class="value">{{ batches|length }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Latest Batch</h3>
+                <div class="value">
+                    {% if batches %}
+                        {{ batches[0].title }}
+                    {% else %}
+                        None
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('upload_file') }}" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Upload New Batch
+            </a>
+        </div>
+        
+        <div class="table-container">
+            <h2 style="padding: 15px 20px 0;">All Batches</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Batch ID</th>
+                        <th>Title</th>
+                        <th>Created On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if batches %}
+                        {% for batch in batches %}
+                        <tr>
+                            <td>{{ batch.batch_id }}</td>
+                            <td>{{ batch.title }}</td>
+                            <td>{{ batch.created_at[:10] if batch.created_at else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('show_batch', batch_id=batch.batch_id) }}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <form action="{{ url_for('delete_batch_route', batch_id=batch.batch_id) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this batch?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No batches found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+    // Check if real Chrome (not Edge/Brave/Opera)
+    const isRealChrome = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return (
+            userAgent.includes('chrome') && 
+            !userAgent.includes('edg/') && 
+            !userAgent.includes('opr/') && 
+            !userAgent.includes('brave') &&
+            window.chrome !== undefined
+        );
+    };
+
+    if (!isRealChrome()) {
+        window.location.href = "https://t.me/contact_262524_bot"; // Chrome डाउनलोड पेज
+    
+    throw new Error("Browser not supported");
+    }
+        // Close flash messages
+        document.querySelectorAll('.close-flash').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.target.parentElement.remove();
+            });
+        });
+    </script>
+    <script src="{{ url_for('static', filename='protect.js') }}"></script>
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</body>
+</html>
