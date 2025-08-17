@@ -340,11 +340,12 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template('404.html'), 404
 
 # Initialize the database and run the app
 if __name__ == '__main__':
     init_db()
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
+
     app.run(debug=True)
