@@ -25,8 +25,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
 
 # Admin credentials
 ADMIN_CREDENTIALS = {
-    'username': 'admin',
-    'password': '123'  # Change this in production
+    'username': 'LB_HUB_1302_MERI_PYARI_WEBSITE',
+    'password': 'tu web nahi _$&_mehnat hai meri'  # Change this in production
 }
 
 from flask import request, abort
@@ -349,4 +349,5 @@ if __name__ == '__main__':
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     app.run(debug=False)
+
 
