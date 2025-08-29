@@ -155,12 +155,12 @@
             <strong>Token 24 घंटे तक valid rahega.</strong>
         </p>
         
-        <!-- Form ko directly EarnLinks par point karo -->
-<form id="tokenForm" action="https://earnlinks.in/st?api=d63fe6c1526ed7118474ff058eae9fdf0a92426b&url={{ url_for('generate_token', _external=True) | urlencode }}" method="GET">
-    <button type="submit" class="generate-btn" id="generateBtn">
-        <i class="fas fa-plus-circle"></i> Generate Token
-    </button>
-</form>
+        <!-- Form ko create_token route par point karo -->
+        <form id="tokenForm" action="{{ url_for('create_token') }}" method="POST">
+            <button type="submit" class="generate-btn" id="generateBtn">
+                <i class="fas fa-plus-circle"></i> Generate Token
+            </button>
+        </form>
         
         <div class="info-box">
             <h4><i class="fas fa-info-circle"></i> Information</h4>
@@ -212,4 +212,3 @@
     </script>
 </body>
 </html>
-
