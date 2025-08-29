@@ -127,20 +127,23 @@ def generate_token():
     if is_token_valid():
         return redirect(url_for('home'))
     
-    # Agar GET request hai to direct page show karo
+    # Agar GET request hai to check karo ki EarnLinks se aaya hai
     if request.method == "GET":
+        # Referer check karo
+        referer = request.headers.get('Referer', '')
+        if 'earnlinks.in' in referer:
+            # Agar EarnLinks se aaya hai to token generate karo
+            token = generate_user_token()
+            if token:
+                expiry = datetime.fromisoformat(session['token_expiry'])
+                expiry_str = expiry.strftime('%d-%m-%Y %I:%M %p')
+                return render_template("token/success.html", token=token, expiry=expiry_str)
+        
+        # Agar direct access ya token generate nahi ho paya to form dikhao
         return render_template("token/generate.html")
         
-    # Agar POST request hai to EarnLinks se aaya hai ya nahi check karo
+    # Agar POST request hai to normal process karo
     if request.method == "POST":
-        # Check if request came from EarnLinks
-        referer = request.headers.get('Referer', '')
-        if 'earnlinks.in' not in referer:
-            # Agar direct access kiya hai to EarnLinks par redirect karo
-            earnlinks_url = f"https://earnlinks.in/st?api=d63fe6c1526ed7118474ff058eae9fdf0a92426b&url={url_for('generate_token', _external=True)}"
-            return redirect(earnlinks_url)
-        
-        # Agar EarnLinks se aaya hai to token generate karo
         token = generate_user_token()
         if token:
             expiry = datetime.fromisoformat(session['token_expiry'])
@@ -149,7 +152,6 @@ def generate_token():
         else:
             flash('Failed to generate token. Please try again.', 'danger')
             return redirect(url_for('generate_token'))
-
 @app.route('/create-token', methods=['POST'])
 def create_token():
     print("Create token route called")
@@ -536,5 +538,6 @@ if __name__ == '__main__':
     init_db()
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
+
 
     app.run(debug=False)
