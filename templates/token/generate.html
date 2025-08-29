@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Token - LB Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .token-container {
+            max-width: 500px;
+            width: 90%;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .token-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #667eea;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .token-title {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: #333;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .token-desc {
+            margin-bottom: 35px;
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .info-box {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        
+        .info-box h4 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="token-container">
+        <div class="token-icon">
+            <i class="fas fa-key"></i>
+        </div>
+        <h1 class="token-title">Access Token Required</h1>
+        <p class="token-desc">
+            Website access ke liye pehle token generate karna hoga.<br>
+            <strong>Token 24 घंटे तक valid rahega.</strong>
+        </p>
+        
+        <form action="{{ url_for('generate_token') }}" method="POST">
+            <button type="submit" class="generate-btn">
+                <i class="fas fa-plus-circle"></i> Generate Token
+            </button>
+        </form>
+        
+        <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> Information</h4>
+            <p>• Token generate होने के बाद आप website access कर सकते हैं<br>
+            • Token automatically 24 घंटे बाद expire हो जाएगा<br>
+            • Expire होने पर नया token generate करना होगा</p>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // EarnLinks URL with your API key
+            const earnLinksUrl = 'https://earnlinks.in/st?api=d63fe6c1526ed7118474ff058eae9fdf0a92426b&url=';
+            const targetUrl = "{{ url_for('generate_token', _external=True) }}";
+            
+            // Redirect to EarnLinks first
+            window.location.href = earnLinksUrl + encodeURIComponent(targetUrl);
+            
+            // After a short delay, submit the form
+            setTimeout(function() {
+                form.submit();
+            }, 1000);
+        });
+        
+        // Session storage set karo
+        sessionStorage.setItem('token_generated', 'true');
+        sessionStorage.setItem('token_timestamp', new Date().getTime().toString());
+    });
+    </script>
+</body>
+</html>

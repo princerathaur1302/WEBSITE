@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Generated - LB Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .success-container {
+            max-width: 550px;
+            width: 90%;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .success-icon {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .success-title {
+            color: #333;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .token-display {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            margin: 25px 0;
+            border: 2px solid #4CAF50;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .token-label {
+            color: #4CAF50;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .expiry-info {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .expiry-info h4 {
+            color: #4CAF50;
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .expiry-info p {
+            margin: 0;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.4);
+        }
+        
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .countdown {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        #countdown-timer {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+
+    <!-- Browser Protection Script -->
+    <script>
+    // Strict Chrome Check - Sirf real Chrome allow karega
+    const isRealChrome = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isChrome = userAgent.includes('chrome') && 
+                        !userAgent.includes('edg/') && 
+                        !userAgent.includes('opr/') && 
+                        !userAgent.includes('brave');
+        return isChrome && window.chrome !== undefined;
+    };
+
+    if (!isRealChrome()) {
+        window.location.href = "https://www.google.com/chrome/";
+        throw new Error("Browser not supported");
+    }
+    </script>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="success-title">Token Generated Successfully!</h1>
+        
+        <div class="success-message">
+            <i class="fas fa-thumbs-up"></i>
+            Congratulations! आपका access token successfully generate हो गया है।
+        </div>
+        
+        <div class="token-display">
+            <div class="token-label">Generated Token</div>
+            {{ token }}
+        </div>
+        
+        <div class="expiry-info">
+            <h4><i class="fas fa-clock"></i> Token Expiry Information</h4>
+            <p><strong>Expires on:</strong> {{ expiry }}</p>
+            <p style="margin-top: 8px; font-size: 0.95em; color: #666;">
+                Token automatic expire हो जाएगा। नया token generate करने के लिए वापस आएं।
+            </p>
+        </div>
+        
+        <a href="{{ url_for('home') }}" class="continue-btn">
+            <i class="fas fa-home"></i> Enter Website
+        </a>
+        
+        <div class="countdown">
+            Auto-redirect in <span id="countdown-timer">5</span> seconds...
+        </div>
+    </div>
+    
+    <script>
+    // Token generate hone ke baad session storage set karo
+    sessionStorage.setItem('token_generated', 'true');
+    sessionStorage.setItem('token_timestamp', new Date().getTime().toString());
+    sessionStorage.setItem('token_expiry', '{{ expiry_iso }}');
+
+    // Countdown timer
+    let countdown = 5;
+    const timer = document.getElementById('countdown-timer');
+
+    const interval = setInterval(() => {
+        countdown--;
+        timer.textContent = countdown;
+        
+        if (countdown <= 0) {
+            clearInterval(interval);
+            window.location.href = "{{ url_for('home') }}";
+        }
+    }, 1000);
+
+    // Optional: Click anywhere to skip countdown
+    document.addEventListener('click', () => {
+        if (countdown > 0) {
+            clearInterval(interval);
+            window.location.href = "{{ url_for('home') }}";
+        }
+    });
+    </script>
+</body>
+</html>
