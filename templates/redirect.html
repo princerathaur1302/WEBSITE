@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Opening in 1DM...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h3>Redirecting to 1DM...</h3>
+</body>
+<script>
+window.onload = function() {
+    const fileUrl = "{{ file_url }}";
+    if (fileUrl) {
+        const intentUrl = `intent:${fileUrl}#Intent;scheme=idmdownload;package=idm.internet.download.manager;end`;
+        window.location.href = intentUrl;
+    } else {
+        document.body.innerHTML = "<h3>No link found!</h3>";
+    }
+};
+</script>
+    </script>
+
+
+<!-- Show only if JS disabled -->
+<noscript>
+<div style="position:fixed;inset:0;background:#0008;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Arial,sans-serif">
+    <div style="max-width:640px;padding:24px;background:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+        <h2 style="margin:0 0 8px">JavaScript required</h2>
+        <p style="margin:0">Is site par content protect ke liye JavaScript on hona zaroori hai.</p>
+    </div>
+</div>
+</noscript>
+</html>
