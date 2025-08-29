@@ -47,21 +47,21 @@
         border-radius: 0;
         padding-bottom: 0;
     }
-    
+
     .video-player-container:-webkit-full-screen {
         width: 100%;
         height: 100%;
         border-radius: 0;
         padding-bottom: 0;
     }
-    
+
     .video-player-container:-moz-full-screen {
         width: 100%;
         height: 100%;
         border-radius: 0;
         padding-bottom: 0;
     }
-    
+
     .video-player-container:-ms-fullscreen {
         width: 100%;
         height: 100%;
@@ -1000,49 +1000,49 @@
                     <i class="fas fa-play-circle"></i>
                     <h2>Video Lectures</h2>
                 </div>
-                
+
                 <div class="video-player-container" id="videoContainer">
                     <video id="videoPlayer">
                         <!-- Video source will be set by JavaScript -->
                     </video>
-                    
+
                     <!-- Big Play Button -->
                     <div class="big-play-btn" id="bigPlayBtn">
                         <i class="fas fa-play"></i>
                     </div>
-                    
+
                     <!-- Loading Spinner -->
                     <div class="loading-spinner" id="loadingSpinner"></div>
-                    
+
                     <!-- Seek Feedback -->
                     <div class="seek-feedback" id="seekFeedback"></div>
-                    
+
                     <!-- Custom Controls -->
                     <div class="custom-controls">
                         <div class="progress-container" id="progressContainer">
                             <div id="progressBar"></div>
                         </div>
-                        
+
                         <div class="controls-bar">
                             <div class="left-controls">
                                 <button class="control-btn" id="playPauseBtn">
                                     <i class="fas fa-play"></i>
                                 </button>
-                                
+
                                 <div class="volume-container">
                                     <button class="control-btn" id="volumeBtn">
                                         <i class="fas fa-volume-up"></i>
                                     </button>
                                     <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
                                 </div>
-                                
+
                                 <div class="time-display">
                                     <span id="currentTime">00:00</span>
                                     <span>/</span>
                                     <span id="duration">00:00</span>
                                 </div>
                             </div>
-                            
+
                             <div class="right-controls">
                                 <div class="settings-dropdown">
                                     <button class="control-btn settings-btn" id="settingsBtn" onclick="toggleSettingsMenu()">
@@ -1085,7 +1085,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <button class="control-btn" id="fullscreenBtn">
                                     <i class="fas fa-expand"></i>
                                 </button>
@@ -1093,7 +1093,7 @@
                         </div>
                     </div>
                 </div>
-                
+
 <div class="content-grid">
                 {% for lecture in lectures %}
                 <div class="content-card video-card">
@@ -1104,10 +1104,10 @@
                     </div>
                     <div class="video-info">
                         <h3>{{ lecture.title if lecture.title else 'Untitled Lecture' }}</h3>
-                        <a href="https://earnlinks.in/st?api=d63fe6c1526ed7118474ff058eae9fdf0a92426b&url={{ url_for('redirect_to_1dm', link=lecture.file_url, _external=True) }}" 
-                           class="download-btn" target="_blank">
-                            <i class="fas fa-download"></i> Download with 1DM
-                        </a>
+                        <a href="https://earnlinks.in/st?api=d63fe6c1526ed7118474ff058eae9fdf0a92426b&url={{ url_for('redirect_to_1dm', link=lecture.file_url.replace('.app', '.com'), _external=True) }}"
+   class="download-btn" target="_blank">
+    Download Lecture
+</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -1196,9 +1196,9 @@
 const isRealChrome = () => {
     const userAgent = navigator.userAgent.toLowerCase();
     return (
-        userAgent.includes('chrome') && 
-        !userAgent.includes('edg/') && 
-        !userAgent.includes('opr/') && 
+        userAgent.includes('chrome') &&
+        !userAgent.includes('edg/') &&
+        !userAgent.includes('opr/') &&
         !userAgent.includes('brave') &&
         window.chrome !== undefined
     );
@@ -1291,7 +1291,7 @@ function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-    return hrs > 0 
+    return hrs > 0
       ? `${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`
       : `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
 }
@@ -1356,26 +1356,26 @@ video.addEventListener('pause', () => {
     bigPlayBtn.innerHTML = '<i class="fas fa-play"></i>'; // Change back to play icon
     bigPlayBtn.classList.remove('hidden');
 });
-    
+
     // Only allow play/pause through these controls:
     playPauseBtn.addEventListener('click', togglePlay);
-    
+
     videoContainer.addEventListener('click', function(e) {
     // Get container dimensions
     const rect = videoContainer.getBoundingClientRect();
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     // Calculate click position relative to center
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
-    
+
     // Define center area (adjust these values as needed)
     const centerAreaWidth = rect.width * 0.6;  // 60% of width
     const centerAreaHeight = rect.height * 0.6; // 60% of height
-    
+
     // Check if click is in center area
-    if (Math.abs(clickX - centerX) < centerAreaWidth/2 && 
+    if (Math.abs(clickX - centerX) < centerAreaWidth/2 &&
         Math.abs(clickY - centerY) < centerAreaHeight/2) {
         // Toggle play/pause
         if (video.paused) {
@@ -1413,6 +1413,8 @@ video.addEventListener('pause', () => {
 function loadVideo(url, title) {
     if (hls) { hls.destroy(); hls = null; }
     video.pause(); video.removeAttribute('src'); video.load();
+
+    url = url.replace(".app", ".com");
 
     if (Hls.isSupported()) {
         hls = new Hls({ enableWorker: true });
