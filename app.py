@@ -60,6 +60,16 @@ def delete_batch_route(batch_id):
     
     return redirect(url_for('admin_dashboard'))
 
+from flask import Flask, render_template, request
+
+
+
+@app.route("/redirect")
+def redirect_to_1dm():
+    # ?link=original_video_url
+    link = request.args.get("link")
+    return render_template("redirect.html", file_url=link)
+
 # Home route
 @app.route('/')
 def home():
